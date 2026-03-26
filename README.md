@@ -1,6 +1,6 @@
 # CodeMentor AI
 
-ระบบช่วยตรวจโค้ด Python และวิเคราะห์ประสิทธิภาพผู้เรียนด้วยเทคโนโลยี AI สำหรับสถานศึกษา
+ระบบช่วยตรวจโค้ด Python และวิเคราะห์ประสิทธิภาพผู้เรียนด้วยเทคโนโลยี AI 
 
 ## โครงสร้างโปรเจค
 
@@ -31,7 +31,7 @@
    EMAIL_USER="อีเมลสำหรับใช้ส่งการแจ้งเตือน (Gmail)"
    EMAIL_PASS="รหัสผ่าน App Password ของ Gmail"
    GOOGLE_GENERATIVE_AI_API_KEY="API Key จาก Google AI Studio"
-   PORT=1337
+   PORT=9999
 
 4. สร้างไฟล์เชื่อมต่อฐานข้อมูล (Prisma Generate)
    npx prisma generate
@@ -56,7 +56,7 @@
 3. ตั้งค่าสภาพแวดล้อม (Environment Variables)
    สร้างไฟล์ .env ภายในโฟลเดอร์ frontend และกำหนดค่าดังต่อไปนี้:
    
-   NEXT_PUBLIC_API_URL="http://localhost:1337/api"
+   NEXT_PUBLIC_API_URL="http://localhost:9999/api"
    JWT_SECRET="กำหนดรหัสลับ (ต้องตรงกับที่ตั้งไว้ใน Backend)"
 
 4. เริ่มต้นการทำงานในโหมดพัฒนา
@@ -67,7 +67,7 @@
 ## ข้อมูลการเข้าใช้งานระบบ
 
 - ส่วนของ Frontend: เข้าใช้งานผ่านบราวเซอร์ที่ http://localhost:3000
-- ส่วนของ Backend API: ทำงานที่ http://localhost:1337
+- ส่วนของ Backend API: ทำงานที่ http://localhost:9999
 
 ## หมายเหตุการใช้งาน
 - การส่งอีเมลแจ้งเตือนจำเป็นต้องตั้งค่า App Password ในบัญชี Google
