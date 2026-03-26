@@ -1,0 +1,83 @@
+"use client";
+
+import { getAssignmentById } from "@/app/services/assignment";
+import { Assignment } from "@/app/types/assignment";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FaClipboardList } from "react-icons/fa";
+
+const teacher: string = "Mr.Nattapong Nakaom";
+
+export default function Page() {
+    const {class_id} = useParams<{ class_id: string }>()
+    const [assignment, setAssignment] = useState<Assignment>();
+    const fetchAssignment = async () => {
+        try {
+            const assignments = await getAssignmentById(class_id)
+            setAssignment(assignments)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(() => {
+        fetchAssignment()
+    }, [class_id])
+    return (
+        <>
+            <div className="max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 gap-5 items-start">
+                    <div className="bg-white p-5 border border-gray-300">
+                        <div className="flex items-start gap-3">
+                            <div className="bg-secondary rounded-full text-white p-3">
+                                <FaClipboardList className="w-5 h-5" />
+                            </div>
+                            <div className="flex justify-between">
+                                <div>
+                                    <h1 className="text-xl">{assignment?.title}</h1>
+                                    <p className="text-muted">{teacher}</p>
+                                    <p className="text-muted">ครบกำหนด 24 ต.ค 2568 8.30 น. 10 คะแนน</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr className="mt-2 mb-2 text-muted" />
+                        <p>
+                            ให้ผู้เรียนเขียนโปรแกรมภาษา Python ที่สามารถคำนวณผลบวกของตัวเลข 1 ถึง 10
+                            และแสดงผลลัพธ์ออกทางหน้าจอ โดยใช้ for loop
+                        </p>
+                        <textarea
+                            id="code-editor"
+                            className="w-full h-72 p-4 font-mono text-sm bg-slate-900 text-white rounded-t-lg border border-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        />
+                        <button
+                            className="bg-primary hover:bg-primary/80 text-white rounded-lg px-5 py-1.5 cursor-pointer mt-2"
+                        >
+                            ทดสอบโค้ด
+                        </button>
+
+                    </div>
+                    <div className="bg-white p-5 border border-gray-300">
+                        <div className="flex justify-between">
+                            <h2 className="text-lg font-bold">งานของคุณ</h2>
+                            <p className="text-muted">มอบหมายแล้ว</p>
+                        </div>
+                        <hr className="mt-2 mb-2 text-muted" />
+                        <div className="bg-white border border-gray-300">
+                            <input className="block w-full p-2" type="file" />
+                        </div>
+                        <button className="bg-primary hover:bg-primary/80 w-full mt-3 mb-3 text-white rounded-md px-5 py-1.5 cursor-pointer">
+                            ส่งงาน
+                        </button>
+                    </div>
+                    <div className="bg-white p-5 border border-gray-300">
+                        <h2 className="font-bold mb-2">คำแนะนำจากปัญญาประดิษฐ์</h2>
+                        <input
+                            className="bg-white border border-gray-300 p-4 rounded-lg text-sm w-full"
+                            disabled
+                            placeholder="ทำได้ดีมาก แต่ไม่ทำจะดีกว่า!"
+                        />
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}

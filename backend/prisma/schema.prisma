@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum FeedBackLevel {
+  HINT
+  CONCEPT
+  ANSWER
+  NONE
+}
+
+enum SubmitStatus {
+  PENDING
+  LATE
+  DONE
+  MISSING
+}
+
+enum UserLevel {
+  VOC_1
+  VOC_2
+  VOC_3
+  VHC_1
+  VHC_2
+}
+
+model Users {
+  user_id  String    @id @default(auto()) @map("_id") @db.ObjectId
+  std_id   String    @unique
+  name     String
+  lastname String
+  email    String?    @unique
+  password String
+  level    UserLevel
+  role     Role
+
+  taughtClasses Classroom[] @relation("TeacherClasses")
+  enrollments Enrollment[]
+  submissions Submission[]
+}
+
+model Classroom {
+  class_id    String   @id @default(auto()) @map("_id") @db.ObjectId
+  class_name  String
+  class_color String?
+  description String
+  announce    String[]
+  teacher_id  String
+  teacher     Users    @relation("TeacherClasses", fields: [teacher_id], references: [user_id])
+
+  students Enrollment[]
+  assignments Assignment[]
+}
+
+model Enrollment {
+  enrollment_id String   @id @default(auto()) @map("_id") @db.ObjectId
+  joined_at     DateTime @default(now())
+
+  class_id  String    @db.ObjectId
+  classroom Classroom @relation(fields: [class_id], references: [class_id])
+
+  student_id String @db.ObjectId
+  student    Users  @relation(fields: [student_id], references: [user_id])
+
+  @@unique([class_id, student_id])
+}
+
+model Assignment {
+  assignment_id  String        @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  description    String
+  score          Int
+  due_date       DateTime
+  create_at      DateTime      @default(now())
+  feedback_level FeedBackLevel
+  class_id       String        @db.ObjectId
+  classroom      Classroom     @relation(fields: [class_id], references: [class_id])
+  submissions    Submission[]
+
+  analysis       AssignmentAnalysis?
+}
+
+model Submission {
+  submission_id    String     @id @default(auto()) @map("_id") @db.ObjectId
+  code             String
+  submitted_at     DateTime   @default(now())
+  status           String
+  score            Int?
+  ai_feedback      Json?
+  teacher_feedback String?
+  assignment_id    String     @db.ObjectId
+  student_id       String     @db.ObjectId
+  assignment       Assignment @relation(fields: [assignment_id], references: [assignment_id])
+  student          Users      @relation(fields: [student_id], references: [user_id])
+}
+
+
+model AssignmentAnalysis {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+
+  assignment_id String     @unique @db.ObjectId
+  assignment    Assignment @relation(fields: [assignment_id], references: [assignment_id])
+
+  overall_strengths   String  
+  overall_weaknesses  String   
+
+  students_needing_help Json
+  top_performers        Json
+
+  created_at    DateTime   @default(now())
+}
